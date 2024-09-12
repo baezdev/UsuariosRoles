@@ -1,6 +1,6 @@
 package com.baezdev.usuariosroles.controller;
 
-import com.baezdev.usuariosroles.model.ApiResponse;
+import com.baezdev.usuariosroles.model.ResponseApi;
 import com.baezdev.usuariosroles.model.PaginateResponse;
 import com.baezdev.usuariosroles.model.User;
 import com.baezdev.usuariosroles.service.UserService;
@@ -21,15 +21,15 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<?>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ResponseApi<?>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
             PaginateResponse<User> users = userService.findAllUsers(pageable);
-            ApiResponse<PaginateResponse<User>> apiResponse = new ApiResponse<>(users, "Usuarios obtenidos con exito", "success");
-            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+            ResponseApi<PaginateResponse<User>> responseApi = new ResponseApi<>(users, "Usuarios obtenidos con exito", "success");
+            return new ResponseEntity<>(responseApi, HttpStatus.OK);
         } catch (Exception e) {
-            ApiResponse<String> apiResponse = new ApiResponse<>(null, e.getMessage(), "error");
-            return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+            ResponseApi<String> responseApi = new ResponseApi<>(null, e.getMessage(), "error");
+            return new ResponseEntity<>(responseApi, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -39,12 +39,12 @@ public class UserController {
             User user = userService.findUserById(id);
 
             if (user == null) {
-                return new ResponseEntity<>(new ApiResponse<>(null, "El usuario no existe", "error"), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new ResponseApi<>(null, "El usuario no existe", "error"), HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(new ApiResponse<>(user, "Usuario encontrado", "success"), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseApi<>(user, "Usuario encontrado", "success"), HttpStatus.OK);
         } catch (Exception e) {
-            ApiResponse<String> apiResponse = new ApiResponse<>(null, e.getMessage(), "error");
-            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            ResponseApi<String> responseApi = new ResponseApi<>(null, e.getMessage(), "error");
+            return new ResponseEntity<>(responseApi, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -56,56 +56,56 @@ public class UserController {
         try {
             Pageable pageable = PageRequest.of(page, size);
             PaginateResponse<User> users = userService.findUserByName(name, pageable);
-            ApiResponse<PaginateResponse<User>> apiResponse = new ApiResponse<>(users, "Usuarios obtenidos con exito", "success");
-            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+            ResponseApi<PaginateResponse<User>> responseApi = new ResponseApi<>(users, "Usuarios obtenidos con exito", "success");
+            return new ResponseEntity<>(responseApi, HttpStatus.OK);
 
         } catch (Exception e) {
-            ApiResponse<String> apiResponse = new ApiResponse<>(null, e.getMessage(), "error");
-            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            ResponseApi<String> responseApi = new ResponseApi<>(null, e.getMessage(), "error");
+            return new ResponseEntity<>(responseApi, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<?>> createUser (@Valid @RequestBody User user) {
+    public ResponseEntity<ResponseApi<?>> createUser (@Valid @RequestBody User user) {
         try {
             User createdUser = userService.createUser(user, user.getRoles());
 
-            ApiResponse<User> userResponse = new ApiResponse<>(createdUser, "Usuario creado con exito", "success");
+            ResponseApi<User> userResponse = new ResponseApi<>(createdUser, "Usuario creado con exito", "success");
             return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
         } catch (Exception e) {
-            ApiResponse<String> userResponse = new ApiResponse<>(null, e.getMessage(), "error");
+            ResponseApi<String> userResponse = new ResponseApi<>(null, e.getMessage(), "error");
             return new ResponseEntity<>(userResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> deleteRoleById(@PathVariable String id) {
+    public ResponseEntity<ResponseApi<?>> deleteRoleById(@PathVariable String id) {
         try {
             boolean userIsDeleted = userService.deleteUserById(id);
             if(!userIsDeleted) {
-                return new ResponseEntity<>(new ApiResponse<>(false, "El usuario no existe", "error"), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new ResponseApi<>(false, "El usuario no existe", "error"), HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(new ApiResponse<>(true, "El usuario fue eliminado exitosamente", "success"), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseApi<>(true, "El usuario fue eliminado exitosamente", "success"), HttpStatus.OK);
 
         } catch (Exception e) {
-            ApiResponse<String> apiResponse = new ApiResponse<>(null, e.getMessage(), "error");
-            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            ResponseApi<String> responseApi = new ResponseApi<>(null, e.getMessage(), "error");
+            return new ResponseEntity<>(responseApi, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> updateRoleById(@PathVariable String id, @Valid @RequestBody User user) {
+    public ResponseEntity<ResponseApi<?>> updateRoleById(@PathVariable String id, @Valid @RequestBody User user) {
         try {
             User response = userService.updateUser(user, id);
             if (response == null) {
-                return new ResponseEntity<>(new ApiResponse<>(null, "El usuario no existe", "error"), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new ResponseApi<>(null, "El usuario no existe", "error"), HttpStatus.NOT_FOUND);
             }
 
-            return new ResponseEntity<>(new ApiResponse<>(response, "El usuario se actualizo correctamente", "success"), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseApi<>(response, "El usuario se actualizo correctamente", "success"), HttpStatus.OK);
         }
         catch (Exception e) {
-            ApiResponse<String> apiResponse = new ApiResponse<>(null, e.getMessage(), "error");
-            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            ResponseApi<String> responseApi = new ResponseApi<>(null, e.getMessage(), "error");
+            return new ResponseEntity<>(responseApi, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
