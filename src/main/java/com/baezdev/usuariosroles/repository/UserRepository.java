@@ -1,6 +1,5 @@
 package com.baezdev.usuariosroles.repository;
 
-import com.baezdev.usuariosroles.model.Rol;
 import com.baezdev.usuariosroles.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
